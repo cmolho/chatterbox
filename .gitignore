@@ -1,1 +1,5 @@
 node_modules/*
+samCodyKey.pem
+samCodyCert.pem
+Badass.cer
+npm-debug.log
