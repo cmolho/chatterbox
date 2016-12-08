@@ -1,0 +1,11 @@
+{
+  "name": "chatterbox",
+  "version": "0.0.1",
+  "description": "Video chat web app",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "node-static": "0.7.9",
+    "socket.io": "1.4.5"
+  }}
