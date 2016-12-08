@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="/css/style.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>
 
 </head>
 <body>
@@ -17,17 +18,5 @@
     </div>
 
     <script src="/js/index.js"/>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        $("#new_room_button").click(function() {
-            $.ajax({
-                url:"/new_room",
-                type: "GET",
-                success: function(res) {
-                    console.log(res);
-                }
-            });
-        });
-    </script>
 </body>
 </html>
