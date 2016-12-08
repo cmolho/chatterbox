@@ -25,16 +25,19 @@ httpsServer = https.createServer(creds, app);
 httpsServer.listen(4242);
 
 app.get('/', function(req, res) {
-    console.log(path.join(__dirname + '/public/index.html'));
+	console.log("GET /index");
+    //console.log(path.join(__dirname + '/public/index.html'));
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
 app.get('/new_room', function(req, res) {
+	console.log("GET /new_room");
     res.end(make_new_room_hash());
 });
 
 app.get('/chatbox/:room_id', function(req, res) {
-	res.end(req.params.room_id);
+	console.log("GET /chatbox/" + req.params.room_id);
+    res.sendFile(path.join(__dirname + '/public/chatbox.html'));
 });
 
 var io = socketIO.listen(httpsServer);
