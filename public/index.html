@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatterbox</title>
+
+    <link rel="stylesheet" href="/css/style.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <p>Hello world</p>
+    <div id="player">
+        <!--TODO: make these the right sizes after getting it working -->
+        <button id="new_room_button">Make New Room</button>
+        <video id="remote" autoplay></video>
+        <video id="local" autoplay></video>
+    </div>
+
+    <script src="/js/index.js"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $("#new_room_button").click(function() {
+            $.ajax({
+                url:"/new_room",
+                type: "GET",
+                success: function(res) {
+                    console.log(res);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
