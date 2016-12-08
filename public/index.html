@@ -18,5 +18,16 @@
     </div>
 
     <script src="/js/index.js"/>
+    <script>
+    $("#new_room_button").click(function() {
+        $.ajax({
+            url:"/new_room",
+            type: "GET",
+            success: function(res) {
+                console.log(res);
+            }
+        });
+    });
+    </script>
 </body>
 </html>
