@@ -6,7 +6,18 @@
 
 var app = require('../app');
 var debug = require('debug')('chatterbox:server');
-var http = require('http');
+var https = require('https');
+var fs = require("fs");
+
+
+/**
+ * Get credentials for HTTPS.
+ */
+var options = {
+	key: fs.readFileSync('bin/credentials/samCodyKey.pem'),
+	cert: fs.readFileSync('bin/credentials/samCodyCert.pem')
+}
+
 
 /**
  * Get port from environment and store in Express.
@@ -19,7 +30,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer(options, app);
 
 /**
  * Listen on provided port, on all network interfaces.
