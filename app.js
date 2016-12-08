@@ -30,12 +30,14 @@ app.get('/', function(req, res) {
 httpsServer.listen(4242);
 
 app.get('/new_room', function(req, res) {
-    res.end(make_new_room());
+    res.end(make_new_room_hash());
 });
+
+
 
 var io = socketIO.listen(httpsServer);
 
-function make_new_room() {
+function make_new_room_hash() {
     // Build out the unique url
     var share_URL = 'https://';
 
@@ -59,7 +61,23 @@ function make_new_room() {
     // Append to URL and pass the room name to socket
     share_URL += room_name;
     console.log(share_URL);
-    return share_URL;
+    return room_name.toString();
     //TODO: pass room name to socket
 
 }
+
+var io = socketIO.listen(httpsServer);
+
+io.sockets.on('connection', function(socket) {
+	
+	function log() {
+		var array = ['Message from server:'];
+		array.push.apply(array, arguments);
+		socket.emit('log', array);
+	}
+
+	socket.on('message', function(message) {
+		log('Client said: ', message);
+		socket.broadcast.emit('message', message);
+	});
+});
