@@ -22,18 +22,20 @@ app.use(express.static(__dirname + '/public'));
 
 httpsServer = https.createServer(creds, app);
 
+httpsServer.listen(4242);
+
 app.get('/', function(req, res) {
     console.log(path.join(__dirname + '/public/index.html'));
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-httpsServer.listen(4242);
-
 app.get('/new_room', function(req, res) {
     res.end(make_new_room_hash());
 });
 
-
+app.get('/chatbox/:room_id', function(req, res) {
+	res.end(req.params.room_id);
+});
 
 var io = socketIO.listen(httpsServer);
 

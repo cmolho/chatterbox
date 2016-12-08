@@ -17,7 +17,6 @@
         <video id="local" autoplay></video>
     </div>
 
-    <script src="/js/index.js"/>
     <script>
     $("#new_room_button").click(function() {
         $.ajax({
@@ -25,6 +24,7 @@
             type: "GET",
             success: function(res) {
                 console.log(res);
+				window.location.pathname = 'chatbox/'+res;
             }
         });
     });
