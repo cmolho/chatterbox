@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chatterbox Room Full</title>
+
+	<link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+	<h1>The room you have tried to enter already has the maximum number of participants.</h1>
+
+	<button id="new_room_button" class="btn btn-lg btn-default">Make New Room</button>
+	<button id="go_home_button" class="btn btn-lg btn-default">Chatterbox Home</button>
+
+	<script>
+    $("#new_room_button").click(function() {
+        $.ajax({
+            url:"/new_room",
+            type: "GET",
+            success: function(res) {
+                console.log(res);
+				window.location.pathname = 'chatbox/'+res;
+            }
+        });
+    });
+
+	$("#go_home_button").click(function() {
+		window.location.pathname = '/';
+	});
+    </script>
+</body>
+</html>

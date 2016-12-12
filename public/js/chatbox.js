@@ -30,6 +30,7 @@ socket.on('ready', function() {
 
 socket.on('full', function(room) {
     console.log('Room ' + room + ' is full.');
+    // window.location.pathname = '/room_full';
 });
 
 socket.on('share_url', function(share_URL) {

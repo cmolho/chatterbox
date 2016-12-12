@@ -12,11 +12,8 @@ var creds = {
     cert: fs.readFileSync('samCodyCert.pem')
 };
 
-//var fileServer = new(nodeStatic.Server)();
+var rooms = {};
 
-//var app = https.createServer(options, function(req, res) {
-//    fileServer.serve(req, res);
-//}).listen(4242);
 var app = express();
 app.use(express.static(__dirname + '/public'));
 
@@ -26,7 +23,6 @@ httpsServer.listen(4242);
 
 app.get('/', function(req, res) {
 	console.log("GET /index");
-    //console.log(path.join(__dirname + '/public/index.html'));
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
@@ -36,8 +32,13 @@ app.get('/new_room', function(req, res) {
 });
 
 app.get('/chatbox/:room_id', function(req, res) {
-	console.log("GET /chatbox/" + req.params.room_id);
-    res.sendFile(path.join(__dirname + '/public/chatbox.html'));
+    console.log("GET /chatbox/" + req.params.room_id);
+    if (rooms[req.params.room_id] >= 2) {
+        console.log("Room " + req.params.room_id + " full, sending room_full page");
+        res.sendFile(path.join(__dirname + '/public/room_full.html'));
+    } else {
+        res.sendFile(path.join(__dirname + '/public/chatbox.html'));
+    }
 });
 
 var io = socketIO.listen(httpsServer);
@@ -71,8 +72,6 @@ function make_share_URL(room) {
     return share_URL;
 
 }
-
-var rooms = {};
 
 io.sockets.on('connection', function(socket) {
 	
