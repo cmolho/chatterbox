@@ -71,7 +71,7 @@ function make_new_room_hash() {
 
 }
 
-var io = socketIO.listen(httpsServer);
+var rooms = {};
 
 io.sockets.on('connection', function(socket) {
 	
@@ -85,4 +85,15 @@ io.sockets.on('connection', function(socket) {
 		log('Client said: ', message);
 		socket.broadcast.emit('message', message);
 	});
+
+    socket.on('create or join', function(room) {
+        console.log('Received request to create or join room ' + room);
+
+        // update room sizes TODO check if too big
+        if (!rooms[room]) rooms[room] = 1;
+        else rooms[room] = rooms[room] + 1;
+        console.log(rooms);
+
+        log('room size is now ', rooms[room]);
+    });
 });
