@@ -110,6 +110,7 @@ io.sockets.on('connection', function(socket) {
     // A user is leaving a room
     socket.on('bye', function(room) {
         console.log('A user has left room ' + room);
+        //TODO room never goes above two people but if extra person tries to connect and leaves, still decrements
         rooms[room] = rooms[room] - 1;
         console.log('Current rooms: ' + JSON.stringify(rooms));
         io.sockets.in(room).emit('left');

@@ -56,5 +56,17 @@ socket.on('message', function(message) {
 // Video Handling
 //////////////////////
 
+var localVideo = document.querySelector('#local');
+var remoteVideo = document.querySelector('#remote');
 
+navigator.mediaDevices.getUserMedia({video: true, audio: false})
+.then(gotStream)
+.catch(function(e) {
+  alert('getUserMedia() error: ' + e.name);
+});
+
+function gotStream(stream) {
+  console.log('Adding local stream.');
+  localVideo.src = window.URL.createObjectURL(stream);
+}
 
