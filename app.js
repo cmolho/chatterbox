@@ -81,19 +81,37 @@ io.sockets.on('connection', function(socket) {
 		socket.emit('log', array);
 	}
 
-	socket.on('message', function(message) {
-		log('Client said: ', message);
-		socket.broadcast.emit('message', message);
+	socket.on('message', function(room, message) {
+		console.log('Client in room ' + room + ' said: ' + message);
+		io.sockets.in(room).emit('message', message);
 	});
 
+    // New user connection creating or joining a room
     socket.on('create or join', function(room) {
         console.log('Received request to create or join room ' + room);
 
         // update room sizes TODO check if too big
-        if (!rooms[room]) rooms[room] = 1;
-        else rooms[room] = rooms[room] + 1;
-        console.log(rooms);
+        if (!rooms[room]) {
+            rooms[room] = 1;
+            socket.join(room);
+            socket.emit('created', room);
+        }
+        else if (rooms[room] === 1) {
+            rooms[room] = rooms[room] + 1;
+            socket.join(room);
+            io.sockets.in(room).emit('ready');
+        } else {
+            socket.emit('full', room);
+        }
 
-        log('room size is now ', rooms[room]);
+        console.log('Current rooms: ' + JSON.stringify(rooms));
+    });
+
+    // A user is leaving a room
+    socket.on('bye', function(room) {
+        console.log('A user has left room ' + room);
+        rooms[room] = rooms[room] - 1;
+        console.log('Current rooms: ' + JSON.stringify(rooms));
+        io.sockets.in(room).emit('left');
     });
 });
