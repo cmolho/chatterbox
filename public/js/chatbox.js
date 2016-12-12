@@ -34,7 +34,10 @@ socket.on('full', function(room) {
 
 socket.on('share_url', function(share_URL) {
     console.log('Share URL is: ' + share_URL);
-    $("#share_URL").text('Share URL is: ' + share_URL);
+    $("#share_URL").val(share_URL);
+    $("#share_URL").click(function() {
+    	$(this).select();
+    });
 });
 
 socket.on('left', function(room) {
