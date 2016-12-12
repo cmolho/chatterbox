@@ -1,6 +1,9 @@
 var isChannelReady = false;
 var isInitiator = false;
 var isStarted = false;
+var localStream;
+var remoteStream;
+var pc;
 
 var room = window.location.pathname.split('/').slice(-1)[0];
 console.log(room);
@@ -54,24 +57,144 @@ function sendMessage(message) {
 
 socket.on('message', function(message) {
     console.log('Client received message:', message);
-    // TODO handle different types of messages (this is where we trigger functions to start the call once we get user media)
-})
+    if (message === 'got user media') {
+        tryStarting();
+    } else if (message.type === 'offer') {
+        if (!isInitiator && !isStarted) {
+            tryStarting();
+        }
+        pc.setRemoteDescription(new RTCSessionDescription(message));
+        doAnswer();
+    } else if (message.type === 'answer' && isStarted) {
+        pc.setRemoteDescription(new RTCSessionDescription(message));
+    } else if (message.type === 'candidate' && isStarted){
+        var candidate = new RTCIceCandidate({
+            sdpMLineIndex: message.label,
+            candidate: message.candidate
+        });
+        pc.addIceCandidate(candidate);
+    } else if (message === 'bye' && isStarted) {
+        handleRemoteHangup();
+    }
+});
+
+function handleRemoteHangup() {
+    console.log('Session terminated.');
+    stop();
+    isInitiator = false;
+}
+
+function stop() {
+    isStarted = false;
+    pc.close();
+    pc = null;
+}
+
+function doAnswer() {
+    console.log('Sending answer to peer.');
+    pc.createAnswer().then(
+        setLocalAndSendMessage,
+        onCreateSessionDescriptionError
+    );
+}
+
+function onCreateSessionDescriptionError(error) {
+    console.log('Failed to create session description: ' + error.toString());
+}
 
 //////////////////////
 // Video Handling
 //////////////////////
 
+function tryStarting() {
+    console.log('>>>>>>> tryStarting() ', isStarted, localStream, isChannelReady);
+    if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
+        console.log('>>>>>> creating peer connection');
+        createPeerConnection();
+        pc.addStream(localStream);
+        isStarted = true;
+        console.log('isInitiator', isInitiator);
+        if (isInitiator) {
+            doCall();
+        }
+    }
+}
+
+function createPeerConnection() {
+    try {
+        pc = new RTCPeerConnection(null);
+        pc.onicecandidate = handleIceCandidate;
+        pc.onaddstream = handleRemoteStreamAdded;
+        pc.onremovestream = handleRemoteStreamAdded;
+        console.log('Created RTCPeerConnection');
+    } catch (e) {
+        console.log('Failed to create PeerConnection, exception: ' + e.message);
+        alert('Cannot create RTCPeerConnection object.');
+        return;
+    }
+}
+
+function handleIceCandidate(event) {
+    console.log('icecandidate event: ', event);
+    if (event.candidate) {
+        sendMessage({
+            type: 'candidate',
+            label: event.candidate.sdpMLineIndex,
+            id: event.candidate.sdpMid,
+            candidate: event.candidate.candidate
+        });
+    } else {
+        console.log('End of candidates.');
+    }
+}
+
+function handleRemoteStreamAdded(event) {
+    console.log('Remote stream added.'); 
+    remoteVideo.src = window.URL.createObjectURL(event.stream);
+    remoteStream = event.stream;
+}
+
+function handleRemoteStreamRemoved(event) {
+    console.log('Remote stream removed. Event: ', event);
+}
+
+function handleCreateOfferError(event) {
+    console.log('createOffer() error: ', event);
+}
+    
+function doCall() {
+    console.log('Sending offer to peer');
+    pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+}
+
+function sendMessage(message) {
+    console.log('Client sending message: ', message);
+    socket.emit('message', room, message);
+}
+
+function setLocalAndSendMessage(sessionDescription) {
+    pc.setLocalDescription(sessionDescription);
+    console.log('setLocalAndSendMessage sending message', sessionDescription);
+    sendMessage(sessionDescription);
+}
+
 var localVideo = document.querySelector('#local');
+localVideo.muted = true;
 var remoteVideo = document.querySelector('#remote');
 
-navigator.mediaDevices.getUserMedia({video: true, audio: false})
+navigator.mediaDevices.getUserMedia({video: true, audio: true})
 .then(gotStream)
 .catch(function(e) {
-  alert('getUserMedia() error: ' + e.name);
+    alert('getUserMedia() error: ' + e.name);
 });
 
 function gotStream(stream) {
-  console.log('Adding local stream.');
-  localVideo.src = window.URL.createObjectURL(stream);
+    console.log('Adding local stream.');
+    localVideo.src = window.URL.createObjectURL(stream);
+    localStream = stream; 
+    sendMessage('got user media');
+    if (isInitiator) {
+        tryStarting();
+    }
 }
 
