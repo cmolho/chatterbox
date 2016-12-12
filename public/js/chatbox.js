@@ -23,16 +23,21 @@ socket.on('created', function(room) {
 socket.on('ready', function() {
     console.log('Second user has connected, ready to start');
     isChannelReady = true;
-})
+});
 
 socket.on('full', function(room) {
     console.log('Room ' + room + ' is full.');
-})
+});
+
+socket.on('share_url', function(share_URL) {
+    console.log('Share URL is: ' + share_URL);
+    $("#share_URL").text('Share URL is: ' + share_URL);
+});
 
 socket.on('left', function(room) {
     console.log('A user has left this room');
     // TODO indicate to user that other person has left
-})
+});
 
 $(window).on('unload', function() {
     socket.emit('bye', room);

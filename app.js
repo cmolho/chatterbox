@@ -43,6 +43,11 @@ app.get('/chatbox/:room_id', function(req, res) {
 var io = socketIO.listen(httpsServer);
 
 function make_new_room_hash() {
+    var room_name = now();
+    return room_name.toString();
+}
+
+function make_share_URL(room) {
     // Build out the unique url
     var share_URL = 'https://';
 
@@ -58,16 +63,12 @@ function make_new_room_hash() {
     }
 
     // Append the port
-    share_URL += ':4242/';
-
-    // Grab a unique number for the private room name
-    var room_name = now();
+    share_URL += ':4242/chatbox/';
 
     // Append to URL and pass the room name to socket
-    share_URL += room_name;
+    share_URL += room;
     console.log(share_URL);
-    return room_name.toString();
-    //TODO: pass room name to socket
+    return share_URL;
 
 }
 
@@ -95,6 +96,8 @@ io.sockets.on('connection', function(socket) {
             rooms[room] = 1;
             socket.join(room);
             socket.emit('created', room);
+            var share_URL = make_share_URL(room);
+            socket.emit('share_url', share_URL);
         }
         else if (rooms[room] === 1) {
             rooms[room] = rooms[room] + 1;
