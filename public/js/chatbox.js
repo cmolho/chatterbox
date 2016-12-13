@@ -25,6 +25,7 @@ socket.on('created', function(room) {
 
 socket.on('ready', function() {
     console.log('Second user has connected, ready to start');
+    $("#share_url").remove();
     isChannelReady = true;
 });
 
@@ -35,8 +36,8 @@ socket.on('full', function(room) {
 
 socket.on('share_url', function(share_URL) {
     console.log('Share URL is: ' + share_URL);
-    $("#share_URL").val(share_URL);
-    $("#share_URL").click(function() {
+    $("#share_URL_input").val(share_URL);
+    $("#share_URL_input").click(function() {
     	$(this).select();
     });
 });
