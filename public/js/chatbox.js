@@ -93,6 +93,7 @@ function stop() {
     isStarted = false;
     pc.close();
     pc = null;
+    // TODO indicate call has ended on the page
 }
 
 function doAnswer() {
@@ -205,23 +206,38 @@ function gotStream(stream) {
 
 $("#mic").click(function() {
 	console.log("mic clicked");
+	if (localStream.getAudioTracks()[0].enabled === true) {
+		localStream.getAudioTracks()[0].enabled = false;
+		$("#mic i").html("mic_off");
+	} else {
+		localStream.getAudioTracks()[0].enabled = true;
+		$("#mic i").html("mic");
+	}
 });
 
 $("#video").click(function() {
 	console.log("video clicked");
+	if (localStream.getVideoTracks()[0].enabled === true) {
+		localStream.getVideoTracks()[0].enabled = false;
+		$("#video i").html("videocam_off");
+	} else {
+		localStream.getVideoTracks()[0].enabled = true;
+		$("#video i").html("videocam");
+	}
 });
 
 $("#volume").click(function() {
 	console.log("volume clicked");
 	if (remoteVideo.muted === true) {
 		remoteVideo.muted = false;
-		$("#volume i").html("volume_up")
+		$("#volume i").html("volume_up");
 	} else {
 		remoteVideo.muted = true;
-		$("#volume i").html("volume_off")
+		$("#volume i").html("volume_off");
 	}
 });
 
 $("#hangup").click(function() {
 	console.log("hangup clicked");
+	stop();
 });
