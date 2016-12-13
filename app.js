@@ -41,6 +41,11 @@ app.get('/chatbox/:room_id', function(req, res) {
     }
 });
 
+app.get('/call_ended', function(req, res) {
+    console.log("GET /call_ended");
+    res.sendFile(path.join(__dirname + '/public/call_ended.html'));
+});
+
 var io = socketIO.listen(httpsServer);
 
 function make_new_room_hash() {

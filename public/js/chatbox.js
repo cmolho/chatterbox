@@ -93,7 +93,8 @@ function stop() {
     isStarted = false;
     pc.close();
     pc = null;
-    // TODO indicate call has ended on the page
+    $("body").empty();
+    window.location.pathname = '/call_ended';
 }
 
 function doAnswer() {
@@ -239,5 +240,6 @@ $("#volume").click(function() {
 
 $("#hangup").click(function() {
 	console.log("hangup clicked");
+	sendMessage("bye");
 	stop();
 });
