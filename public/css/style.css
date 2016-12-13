@@ -25,6 +25,15 @@ body {
 
 #share_url {
     position: absolute;
+    bottom: 50%;
+    right: 50%;
+    font-size: large;
+    width: 408px;
+}
+
+#share_URL_input {
+    font-size: large;
+    width: inherit;
 }
 
 #controls {
