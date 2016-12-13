@@ -55,3 +55,8 @@ body {
 .material-icons {
 	font-size: 20px !important;
 }
+
+#error_image {
+	height: 300px;
+	border-radius: 10%;
+}

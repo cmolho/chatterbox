@@ -44,7 +44,7 @@ socket.on('share_url', function(share_URL) {
 
 socket.on('left', function(room) {
     console.log('A user has left this room');
-    // TODO indicate to user that other person has left
+    stop();
 });
 
 $(window).on('unload', function() {
@@ -94,7 +94,6 @@ function stop() {
     isStarted = false;
     pc.close();
     pc = null;
-    $("body").empty();
     window.location.pathname = '/call_ended';
 }
 
@@ -241,6 +240,10 @@ $("#volume").click(function() {
 
 $("#hangup").click(function() {
 	console.log("hangup clicked");
-	sendMessage("bye");
-	stop();
+	if (isStarted) {
+		sendMessage("bye");
+		stop();
+	} else {
+		window.location.pathname = '/call_ended';
+	}
 });
