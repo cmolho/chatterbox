@@ -56,6 +56,7 @@ $(window).on('unload', function() {
 //////////////////////
 
 function sendMessage(message) {
+	console.log('Client sending message: ', message);
     socket.emit('message', room, message);
 }
 
@@ -171,11 +172,6 @@ function doCall() {
     pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 }
 
-function sendMessage(message) {
-    console.log('Client sending message: ', message);
-    socket.emit('message', room, message);
-}
-
 function setLocalAndSendMessage(sessionDescription) {
     pc.setLocalDescription(sessionDescription);
     console.log('setLocalAndSendMessage sending message', sessionDescription);
@@ -202,3 +198,30 @@ function gotStream(stream) {
     }
 }
 
+
+//////////////////////
+// Buttons
+//////////////////////
+
+$("#mic").click(function() {
+	console.log("mic clicked");
+});
+
+$("#video").click(function() {
+	console.log("video clicked");
+});
+
+$("#volume").click(function() {
+	console.log("volume clicked");
+	if (remoteVideo.muted === true) {
+		remoteVideo.muted = false;
+		$("#volume i").html("volume_up")
+	} else {
+		remoteVideo.muted = true;
+		$("#volume i").html("volume_off")
+	}
+});
+
+$("#hangup").click(function() {
+	console.log("hangup clicked");
+});

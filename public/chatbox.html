@@ -4,6 +4,8 @@
     <title>Chatterbox Room</title>
 
     <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -13,6 +15,24 @@
     <video id="local" autoplay></video>
     <div id="share_url">
     	Share URL is: <input id="share_URL" type="text" readonly="readonly"/>
+    </div>
+
+    <div id="controls">
+		<button id="mic" type="button" class="btn btn-default btn-sm btn-circle">
+			<i class="material-icons">mic</i>
+		</button>
+		<br>
+		<button id="video" type="button" class="btn btn-default btn-sm btn-circle">
+			<i class="material-icons">videocam</i>
+		</button>
+		<br>
+		<button id="volume" type="button" class="btn btn-default btn-sm btn-circle">
+			<i class="material-icons">volume_up</i>
+		</button>
+		<br>
+		<button id="hangup" type="button" class="btn btn-default btn-sm btn-circle">
+			<i class="material-icons">call_end</i>
+		</button>
     </div>
 
     <script src="/js/chatbox.js"></script>
